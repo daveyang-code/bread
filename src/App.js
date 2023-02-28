@@ -13,113 +13,140 @@ import {
 } from "@mui/material";
 
 function App() {
-  const [flourWeight, setFlourWeight] = useState("");
-  const [saltWeight, setSaltWeight] = useState("");
-  const [fatWeight, setFatWeight] = useState("");
-  const [waterPercentage, setWaterPercentage] = useState("");
-  const [waterWeight, setWaterWeight] = useState("");
-  const [saltPercentage, setSaltPercentage] = useState("");
-  const [fatPercentage, setFatPercentage] = useState("");
-  const [doughWeight, setDoughWeight] = useState("", [
-    flourWeight,
-    waterWeight,
-    waterPercentage,
-    saltWeight,
-    saltPercentage,
-    fatWeight,
-    fatPercentage,
-  ]);
+  const [flourWeight, setFlourWeight] = useState(0);
+  const [saltWeight, setSaltWeight] = useState(0);
+  const [fatWeight, setFatWeight] = useState(0);
+  const [waterPercentage, setWaterPercentage] = useState(0);
+  const [waterWeight, setWaterWeight] = useState(0);
+  const [saltPercentage, setSaltPercentage] = useState(0);
+  const [fatPercentage, setFatPercentage] = useState(0);
+  const [doughWeight, setDoughWeight] = useState(0);
+  const [preset, setPreset] = useState("");
 
   const handlePresetChange = (event) => {
-    const recipe = recipes.filter((bread) => event === bread.breadType)[0];
-    setWaterPercentage(recipe.liquid * 100);
-    setSaltPercentage(recipe.salt * 100);
-    setFatPercentage(recipe.fat * 100);
-    setWaterWeight(recipe.liquid * flourWeight);
-    setSaltWeight(recipe.salt * flourWeight);
-    setFatWeight(recipe.fat * flourWeight);
-    setDoughWeight(
-      (
-        Number(flourWeight) +
-        Number(waterWeight) +
-        Number(saltWeight) +
-        Number(fatWeight)
-      ).toFixed(2)
-    );
+    
+    setPreset(event);
+
+    if (event) {
+
+      const recipe = recipes.filter((bread) => event === bread.breadType)[0];
+      const newWaterWeight = parseFloat((recipe.liquid * flourWeight).toFixed(2));
+      const newSaltWeight = parseFloat((recipe.salt * flourWeight).toFixed(2));
+      const newFatWeight = parseFloat((recipe.fat * flourWeight).toFixed(2));
+      
+      setWaterPercentage(recipe.liquid * 100);
+      setSaltPercentage(recipe.salt * 100);
+      setFatPercentage(recipe.fat * 100);
+      setWaterWeight(newWaterWeight);
+      setSaltWeight(newSaltWeight);
+      setFatWeight(newFatWeight);
+      setDoughWeight(
+        parseFloat(
+          Number(flourWeight) + newWaterWeight + newSaltWeight + newFatWeight
+        ).toFixed(2)
+      );
+
+    }
   };
 
   const handleFlourWeightChange = (event) => {
+    
     if (event.target.value >= 0) {
+      
+      const newWaterWeight = parseFloat(
+        ((event.target.value * waterPercentage) / 100).toFixed(2)
+      );
+      const newSaltWeight = parseFloat(
+        ((event.target.value * saltPercentage) / 100).toFixed(2)
+      );
+      const newFatWeight = parseFloat(
+        ((event.target.value * fatPercentage) / 100).toFixed(2)
+      );
+      
       setFlourWeight(event.target.value);
-      setWaterWeight((waterPercentage / 100) * flourWeight);
-      setSaltWeight((saltPercentage / 100) * flourWeight);
-      setFatWeight((fatPercentage / 100) * flourWeight);
+      setWaterWeight(newWaterWeight);
+      setSaltWeight(newSaltWeight);
+      setFatWeight(newFatWeight);
       setDoughWeight(
         (
-          Number(flourWeight) +
-          Number(waterWeight) +
-          Number(saltWeight) +
-          Number(fatWeight)
+          Number(event.target.value) +
+          newWaterWeight +
+          newSaltWeight +
+          newFatWeight
         ).toFixed(2)
       );
+
     }
   };
 
   const handleWaterPercentageChange = (event) => {
+    
     if (event.target.value >= 0) {
-      setWaterPercentage(event.target.value);
-      setWaterWeight((event.target.value / 100) * flourWeight);
-      setDoughWeight(
-        (
-          Number(flourWeight) +
-          Number(waterWeight) +
-          Number(saltWeight) +
-          Number(fatWeight)
-        ).toFixed(2)
+      
+      const newWaterWeight = parseFloat(
+        ((event.target.value * flourWeight) / 100).toFixed(2)
       );
+      
+      setWaterPercentage(Number(event.target.value));
+      setWaterWeight(newWaterWeight);
+      setDoughWeight(
+        (Number(flourWeight) + newWaterWeight + saltWeight + fatWeight).toFixed(
+          2
+        )
+      );
+    
     }
   };
 
   const handleSaltPercentageChange = (event) => {
+    
     if (event.target.value >= 0) {
-      setSaltPercentage(event.target.value);
-      setSaltWeight((event.target.value / 100) * flourWeight);
-      setDoughWeight(
-        (
-          Number(flourWeight) +
-          Number(waterWeight) +
-          Number(saltWeight) +
-          Number(fatWeight)
-        ).toFixed(2)
+    
+      const newSaltWeight = parseFloat(
+        ((event.target.value * flourWeight) / 100).toFixed(2)
       );
+    
+      setSaltPercentage(Number(event.target.value));
+      setSaltWeight(newSaltWeight);
+      setDoughWeight(
+        (Number(flourWeight) + waterWeight + newSaltWeight + fatWeight).toFixed(
+          2
+        )
+      );
+    
     }
   };
 
   const handleFatPercentageChange = (event) => {
+    
     if (event.target.value >= 0) {
-      setFatPercentage(event.target.value);
-      setFatWeight((event.target.value / 100) * flourWeight);
-      setDoughWeight(
-        (
-          Number(flourWeight) +
-          Number(waterWeight) +
-          Number(saltWeight) +
-          Number(fatWeight)
-        ).toFixed(2)
+    
+      const newFatWeight = parseFloat(
+        ((event.target.value * flourWeight) / 100).toFixed(2)
       );
+    
+      setFatPercentage(Number(event.target.value));
+      setFatWeight(newFatWeight);
+      setDoughWeight(
+        (Number(flourWeight) + waterWeight + saltWeight + newFatWeight).toFixed(
+          2
+        )
+      );
+    
     }
   };
 
   return (
     <div className="App">
       <Container maxWidth="sm">
+        
         <Box textAlign={"center"} sx={{ mt: 5 }}>
           <img src={logo} width="100px" alt="logo" />
           <Typography fontFamily={"Homemade Apple"} variant="h5" sx={{ mb: 5 }}>
             Bread Calculator
           </Typography>
         </Box>
-
+        
         <Stack
           direction={"row"}
           spacing={2}
@@ -133,11 +160,16 @@ function App() {
           <Select
             sx={{ minWidth: 170 }}
             size="small"
+            value={preset}
             onChange={(e) => handlePresetChange(e.target.value)}
           >
-            <MenuItem value="">None</MenuItem>
+            <MenuItem key="None" value="">
+              None
+            </MenuItem>
             {recipes.map((recipe) => (
-              <MenuItem value={recipe.breadType}>{recipe.breadType}</MenuItem>
+              <MenuItem key={recipe.breadType} value={recipe.breadType}>
+                {recipe.breadType}
+              </MenuItem>
             ))}
           </Select>
         </Stack>
@@ -157,7 +189,6 @@ function App() {
             <TextField
               label="Water (g)"
               variant="outlined"
-              type="number"
               value={waterWeight}
               fullWidth
             />
@@ -176,7 +207,6 @@ function App() {
             <TextField
               label="Salt (g)"
               variant="outlined"
-              type="number"
               value={saltWeight}
               fullWidth
             />
@@ -195,7 +225,6 @@ function App() {
             <TextField
               label="Fat (g)"
               variant="outlined"
-              type="number"
               value={fatWeight}
               fullWidth
             />
@@ -219,6 +248,7 @@ function App() {
             />
           </Grid>
         </Grid>
+        
       </Container>
     </div>
   );
